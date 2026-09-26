@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch: {}
+  workflow_run:
+    # I push fatti con il GITHUB_TOKEN di un altro workflow (come quello
+    # che aggiorna i dati da Instagram) non fanno scattare "on: push", per
+    # evitare loop infiniti. Quindi agganciamo la build direttamente al
+    # completamento di quel workflow.
+    workflows: ["Aggiorna dati da Instagram"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -17,6 +24,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Se scatta a seguito di workflow_run, costruisci solo se quel workflow
+    # e' andato a buon fine.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
 
