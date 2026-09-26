@@ -1,0 +1,45 @@
+name: Aggiorna dati da Instagram
+
+on:
+  schedule:
+    # Ogni giorno alle 6:00 UTC (7:00 o 8:00 ora italiana a seconda dell'ora legale)
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+  # Il workflow_dispatch permette di far partire l'aggiornamento a mano
+  # dalla tab Actions, senza aspettare il cron, utile per i test.
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Leggi i post nuovi ed estrai i dati
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          # Facoltativo per ora: se il secret non esiste, i post vengono
+          # importati cosi' come sono, senza classificazione/estrazione.
+          # Aggiungere ANTHROPIC_API_KEY tra i Secrets del repo per
+          # attivare la lettura "intelligente" di risultati e marcatori.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/fetch-instagram.js
+
+      - name: Fai commit e push se ci sono dati nuovi
+        run: |
+          git config user.name "montecavolo-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "Nessuna modifica ai dati, niente da pubblicare."
+          else
+            git commit -m "Aggiornamento automatico dati da Instagram"
+            git push
+          fi
