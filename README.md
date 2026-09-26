@@ -36,16 +36,39 @@ Poi apri `dist/index.html` nel browser, oppure servilo con
    **GitHub Actions**.
 3. Ad ogni push su `main`, il workflow rigenera il sito e lo pubblica.
 
+## Pipeline Instagram (automatica, giornaliera)
+
+`scripts/fetch-instagram.js` + `.github/workflows/fetch-instagram.yml`:
+ogni giorno legge i post nuovi dall'account Instagram della squadra,
+li passa all'API di Claude per classificarli (è un post-risultato o
+no?) ed estrarne i dati strutturati (avversario, punteggio,
+marcatori), poi aggiorna `data/posts.json`, `data/matches.json` e
+`data/scorers.json` e fa push. Quel push fa scattare in automatico
+anche il workflow di build/deploy, quindi il sito si aggiorna da
+solo.
+
+Richiede questi Secrets nel repo (Settings → Secrets and variables →
+Actions): `INSTAGRAM_ACCESS_TOKEN`, `INSTAGRAM_ACCOUNT_ID`.
+
+`ANTHROPIC_API_KEY` è **facoltativo**: senza, i post vengono importati
+così come sono (didascalia → titolo/estratto del blog), senza capire
+se sono referti partita né estrarre punteggio/marcatori. Aggiungendo
+quel secret in un secondo momento, la pipeline passa da sola alla
+modalità "intelligente" — non serve toccare altro.
+
+Il token Instagram dura 60 giorni e va rinnovato manualmente dalla
+dashboard Meta prima della scadenza (nessun avviso automatico, per
+ora — da tenere a mente).
+
+Per testare la pipeline senza aspettare il cron: tab Actions → "Aggiorna
+dati da Instagram" → "Run workflow".
+
 ## Cosa manca (prossimi passi)
 
-- **Dati reali**: sostituire i JSON in `/data` con squadra, partite e
-  marcatori veri.
-- **Pipeline Instagram**: un secondo workflow schedulato (cron
-  giornaliero) che legge i nuovi post via Instagram Graph API,
-  li classifica/estrae con l'API di Claude, scrive i risultati dentro
-  `/data` e fa push — a quel punto questo workflow di build/deploy
-  scatta da solo.
+- **Dati reali**: sostituire i giocatori in `data/players.json` con
+  la rosa vera (la pipeline non li tocca, sono gestiti a mano).
 - **Classifica campionato**: eventuale terza sorgente dati dal sito
   della lega, se si decide di importarla.
 - **Dominio personalizzato**: da collegare più avanti su GitHub Pages,
   quando è pronto.
+- **Rinnovo token Instagram**: da fare manualmente ogni ~60 giorni.
