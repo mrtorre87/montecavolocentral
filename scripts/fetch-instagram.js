@@ -42,7 +42,7 @@ function writeJSON(name, data) {
 // ---- 1. Legge i media recenti da Instagram ----
 
 async function fetchRecentMedia() {
-  const fields = 'id,caption,timestamp,permalink,media_type,media_url';
+  const fields = 'id,caption,timestamp,permalink,media_type,media_url,thumbnail_url,children{media_type,media_url,thumbnail_url}';
   const url = `https://graph.instagram.com/v21.0/${IG_ACCOUNT_ID}/media?fields=${fields}&access_token=${IG_TOKEN}&limit=25`;
   const res = await fetch(url);
   const json = await res.json();
@@ -50,6 +50,33 @@ async function fetchRecentMedia() {
     throw new Error(`Errore Instagram API: ${json.error.message}`);
   }
   return json.data || [];
+}
+
+// Sceglie l'URL immagine migliore per un post: per i video usa la
+// miniatura, per i caroselli la prima immagine/miniatura del gruppo.
+function pickImageUrl(m) {
+  if (m.media_type === 'VIDEO') return m.thumbnail_url || null;
+  if (m.media_type === 'CAROUSEL_ALBUM') {
+    const child = m.children && m.children.data && m.children.data[0];
+    if (!child) return null;
+    return child.media_type === 'VIDEO' ? child.thumbnail_url : child.media_url;
+  }
+  return m.media_url || null;
+}
+
+const IMG_DIR = path.join(__dirname, '..', 'assets', 'img', 'posts');
+
+// Scarica e salva l'immagine nel repo: i media_url di Instagram sono
+// temporanei (scadono), quindi non si possono solo linkare, vanno
+// proprio salvati come file.
+async function downloadImage(url, mediaId) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Download immagine fallito (HTTP ${res.status})`);
+  const buffer = Buffer.from(await res.arrayBuffer());
+  fs.mkdirSync(IMG_DIR, { recursive: true });
+  const filename = `${mediaId}.jpg`;
+  fs.writeFileSync(path.join(IMG_DIR, filename), buffer);
+  return `assets/img/posts/${filename}`;
 }
 
 // ---- 2. Classifica ed estrae i dati con Claude ----
@@ -168,6 +195,16 @@ async function main() {
 
     const date = isoDate(m.timestamp);
 
+    let image = null;
+    const imageUrl = pickImageUrl(m);
+    if (imageUrl) {
+      try {
+        image = await downloadImage(imageUrl, m.id);
+      } catch (err) {
+        console.error(`  Download immagine fallito per ${m.id}: ${err.message}. Il post resta senza immagine.`);
+      }
+    }
+
     posts.unshift({
       date,
       title: extracted.title,
@@ -175,6 +212,7 @@ async function main() {
       type: extracted.is_match_post ? 'risultato' : 'generico',
       instagram_url: m.permalink,
       instagram_id: m.id,
+      image,
     });
 
     if (extracted.is_match_post && extracted.opponent) {
