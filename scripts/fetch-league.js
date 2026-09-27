@@ -123,11 +123,26 @@ async function main() {
   const res = await fetch(LEAGUE_URL, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Accept-Language': 'it-IT,it;q=0.9,en;q=0.8',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+      'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Upgrade-Insecure-Requests': '1',
+      'Referer': 'https://www.google.com/',
     },
   });
-  if (!res.ok) throw new Error(`Impossibile leggere la pagina della lega (HTTP ${res.status})`);
+  if (!res.ok) {
+    // Log diagnostico: aiuta a capire la causa esatta se fallisce di nuovo,
+    // senza dover rifare un giro di debug da zero.
+    const bodySnippet = (await res.text().catch(() => '')).slice(0, 300);
+    console.error(`Risposta HTTP ${res.status} da ${LEAGUE_URL}`);
+    console.error('Prime righe del corpo della risposta:', bodySnippet);
+    throw new Error(`Impossibile leggere la pagina della lega (HTTP ${res.status})`);
+  }
   const html = await res.text();
 
   const tables = extractTables(html);
