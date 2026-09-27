@@ -1,0 +1,36 @@
+name: Aggiorna classifica campionato
+
+on:
+  schedule:
+    # Ogni lunedi' alle 7:00 UTC: le partite del weekend sono gia' state
+    # omologate nella maggior parte dei casi.
+    - cron: '0 7 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-league-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Leggi classifica e marcatori dal sito della lega
+        run: node scripts/fetch-league.js
+
+      - name: Fai commit e push se ci sono dati nuovi
+        run: |
+          git config user.name "montecavolo-bot"
+          git config user.email "actions@github.com"
+          git add data/league-standings.json data/league-scorers.json
+          if git diff --cached --quiet; then
+            echo "Nessuna modifica alla classifica, niente da pubblicare."
+          else
+            git commit -m "Aggiornamento automatico classifica campionato"
+            git push
+          fi

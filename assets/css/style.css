@@ -279,6 +279,11 @@ table.data-table tr:hover td { background: #FFFFFF; }
 .result-d { color: var(--muted); font-weight: 700; }
 .result-l { color: var(--red); font-weight: 700; }
 
+table.data-table tr.us-row td {
+  background: #FBEAEA;
+  font-weight: 700;
+}
+
 /* ---- Roster ---- */
 
 .roster-grid {
