@@ -223,6 +223,16 @@ nav.main-nav a.active {
   font-size: 15px;
 }
 
+.post-thumb {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: 220px;
+  object-fit: cover;
+  border: 1.5px solid var(--rule);
+  margin: 4px 0 10px;
+}
+
 .post-link {
   display: inline-block;
   margin-top: 8px;

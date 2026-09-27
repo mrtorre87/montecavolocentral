@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name "montecavolo-bot"
           git config user.email "actions@github.com"
-          git add data/
+          git add data/ assets/img/posts/
           if git diff --cached --quiet; then
             echo "Nessuna modifica ai dati, niente da pubblicare."
           else

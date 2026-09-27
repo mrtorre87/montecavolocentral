@@ -26,6 +26,19 @@ const matches = readJSON('matches.json');
 const scorers = readJSON('scorers.json').sort((a, b) => b.goals - a.goals);
 const posts = [...readJSON('posts.json')].sort((a, b) => (a.date < b.date ? 1 : -1));
 
+// Classifica campionato e marcatori di girone: arrivano da un workflow
+// separato (scripts/fetch-league.js) e potrebbero non esistere ancora
+// al primo build, quindi si legge con un fallback vuoto.
+function readJSONSafe(name, fallback) {
+  try {
+    return readJSON(name);
+  } catch {
+    return fallback;
+  }
+}
+const leagueStandings = readJSONSafe('league-standings.json', { rows: [], updated: null });
+const leagueScorers = readJSONSafe('league-scorers.json', { rows: [], updated: null });
+
 const MONTHS = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
 
 function formatDateBadge(iso) {
@@ -69,6 +82,7 @@ function layout({ title, active, body }) {
       <a href="squadra.html" class="${active === 'squadra' ? 'active' : ''}">Squadra</a>
       <a href="risultati.html" class="${active === 'risultati' ? 'active' : ''}">Risultati</a>
       <a href="marcatori.html" class="${active === 'marcatori' ? 'active' : ''}">Marcatori</a>
+      <a href="classifica.html" class="${active === 'classifica' ? 'active' : ''}">Classifica</a>
     </nav>
   </div>
 </header>
@@ -112,11 +126,15 @@ function heroBlock() {
 function postItem(post) {
   const badge = formatDateBadge(post.date);
   const tag = post.type === 'risultato' ? '<span class="post-tag">Risultato</span>' : '';
+  const thumb = post.image
+    ? `<img class="post-thumb" src="${escapeHtml(post.image)}" alt="" loading="lazy">`
+    : '';
   return `<li class="post-item">
     <div class="post-date"><span class="day">${badge.day}</span>${badge.month}</div>
     <div>
       ${tag}
       <h3 class="post-title">${escapeHtml(post.title)}</h3>
+      ${thumb}
       <p class="post-excerpt">${escapeHtml(post.excerpt)}</p>
       <a class="post-link" href="${escapeHtml(post.instagram_url)}" target="_blank" rel="noopener">Vedi il post originale</a>
     </div>
@@ -219,6 +237,76 @@ function pageMarcatori() {
   return layout({ title: 'Classifica marcatori', active: 'marcatori', body });
 }
 
+// ---- Classifica campionato (dati dalla lega) ----
+
+function standingsRow(r) {
+  return `<tr class="${r.is_us ? 'us-row' : ''}">
+    <td class="score">${r.position}</td>
+    <td>${escapeHtml(r.team)}</td>
+    <td class="score">${r.points}</td>
+    <td>${r.played}</td>
+    <td>${r.wins}</td>
+    <td>${r.draws}</td>
+    <td>${r.losses}</td>
+    <td>${r.goals_for}</td>
+    <td>${r.goals_against}</td>
+    <td>${r.goal_diff}</td>
+  </tr>`;
+}
+
+function leagueScorerRow(r, i) {
+  return `<tr>
+    <td class="score">${i + 1}</td>
+    <td>${escapeHtml(r.name)}</td>
+    <td class="score">${r.goals}</td>
+  </tr>`;
+}
+
+function pageClassifica() {
+  const ourScorers = leagueScorers.rows.filter((r) => r.is_us);
+  const updatedNote = leagueStandings.updated
+    ? `Aggiornata ${formatDateLong(leagueStandings.updated.slice(0, 10))}`
+    : 'Dati non ancora disponibili';
+  const standingsBody = leagueStandings.rows.length
+    ? `<table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Squadra</th><th>Pt</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th></tr>
+    </thead>
+    <tbody>
+      ${leagueStandings.rows.map(standingsRow).join('\n')}
+    </tbody>
+  </table>`
+    : '<p class="post-excerpt">Classifica non ancora disponibile.</p>';
+
+  const scorersBody = ourScorers.length
+    ? `<table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Giocatore</th><th>Gol</th></tr>
+    </thead>
+    <tbody>
+      ${ourScorers.map(leagueScorerRow).join('\n')}
+    </tbody>
+  </table>`
+    : '<p class="post-excerpt">Nessun marcatore di Montecavolo Central ancora in classifica.</p>';
+
+  const body = `<div class="wrap">
+  <div class="section-head">
+    <h2>Classifica campionato</h2>
+    <span class="count">${updatedNote}</span>
+  </div>
+  ${standingsBody}
+  <div class="section-head">
+    <h2>Marcatori Montecavolo Central</h2>
+    <span class="count">classifica ufficiale di girone</span>
+  </div>
+  ${scorersBody}
+  <p class="post-excerpt" style="margin-top:8px;color:var(--muted);font-size:13px;">
+    Dati dal sito ufficiale del campionato CSI, ufficiosi fino a omologazione.
+  </p>
+</div>`;
+  return layout({ title: 'Classifica campionato', active: 'classifica', body });
+}
+
 // ---- Build ----
 
 function copyDir(src, dest) {
@@ -238,6 +326,7 @@ fs.writeFileSync(path.join(DIST, 'index.html'), pageHome());
 fs.writeFileSync(path.join(DIST, 'squadra.html'), pageSquadra());
 fs.writeFileSync(path.join(DIST, 'risultati.html'), pageRisultati());
 fs.writeFileSync(path.join(DIST, 'marcatori.html'), pageMarcatori());
+fs.writeFileSync(path.join(DIST, 'classifica.html'), pageClassifica());
 copyDir(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
 
 console.log(`Sito generato in ${DIST}`);
