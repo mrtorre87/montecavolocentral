@@ -289,16 +289,8 @@ function standingsRow(r) {
   </tr>`;
 }
 
-function leagueScorerRow(r, i) {
-  return `<tr>
-    <td class="score">${i + 1}</td>
-    <td>${escapeHtml(r.name)}</td>
-    <td class="score">${r.goals}</td>
-  </tr>`;
-}
 
 function pageClassifica() {
-  const ourScorers = leagueScorers.rows.filter((r) => r.is_us);
   const updatedNote = leagueStandings.updated
     ? `Aggiornata ${formatDateLong(leagueStandings.updated.slice(0, 10))}`
     : 'Dati non ancora disponibili';
@@ -313,28 +305,12 @@ function pageClassifica() {
   </table>`
     : '<p class="post-excerpt">Classifica non ancora disponibile.</p>';
 
-  const scorersBody = ourScorers.length
-    ? `<table class="data-table">
-    <thead>
-      <tr><th>#</th><th>Giocatore</th><th>Gol</th></tr>
-    </thead>
-    <tbody>
-      ${ourScorers.map(leagueScorerRow).join('\n')}
-    </tbody>
-  </table>`
-    : '<p class="post-excerpt">Nessun marcatore di Montecavolo Central ancora in classifica.</p>';
-
   const body = `<div class="wrap">
   <div class="section-head">
     <h2>Classifica campionato</h2>
     <span class="count">${updatedNote}</span>
   </div>
   ${standingsBody}
-  <div class="section-head">
-    <h2>Marcatori Montecavolo Central</h2>
-    <span class="count">classifica ufficiale di girone</span>
-  </div>
-  ${scorersBody}
   <p class="post-excerpt" style="margin-top:8px;color:var(--muted);font-size:13px;">
     Dati dal sito ufficiale del campionato CSI, ufficiosi fino a omologazione.
   </p>
