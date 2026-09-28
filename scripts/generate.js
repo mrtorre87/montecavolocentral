@@ -171,9 +171,9 @@ function pageSquadra() {
     <h2>La rosa</h2>
     <span class="count">${players.length} giocatori</span>
   </div>
-  <div class="roster-grid">
+  ${players.length ? `<div class="roster-grid">
     ${players.map(playerCard).join('\n')}
-  </div>
+  </div>` : '<p class="post-excerpt">La rosa sara\' pubblicata a breve.</p>'}
 </div>`;
   return layout({ title: 'Squadra', active: 'squadra', body });
 }

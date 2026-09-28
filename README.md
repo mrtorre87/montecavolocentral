@@ -1,74 +1,57 @@
 # Montecavolo Central — sito
 
-Scheletro del sito, statico, senza hosting a parte: generato con un
-piccolo script Node (zero dipendenze esterne) e pubblicato su GitHub
-Pages tramite GitHub Actions.
+Sito statico della squadra, senza hosting a parte: le pagine vengono
+generate da uno script Node (nessuna dipendenza da installare) e
+pubblicate su GitHub Pages tramite GitHub Actions.
 
 ## Struttura
 
 ```
-data/                 dati del sito (finti per ora)
-  players.json         rosa
-  matches.json          risultati
-  scorers.json           classifica marcatori
-  posts.json               post del blog
-scripts/generate.js   genera le pagine HTML in /dist a partire da /data
-assets/                css e immagini (logo pulito incluso)
-dist/                  output generato (non modificare a mano)
-.github/workflows/    build + deploy automatico su GitHub Pages
+.github/workflows/
+  build-deploy.yml       genera il sito e lo pubblica su GitHub Pages
+  fetch-instagram.yml    ogni giorno legge i nuovi post Instagram
+assets/
+  css/style.css          stile del sito
+  img/logo.png           stemma
+  img/posts/             immagini dei post (scaricate in automatico)
+data/
+  posts.json             post del blog (scritto in automatico)
+  matches.json           risultati
+  scorers.json           marcatori interni
+  players.json           rosa (da compilare a mano)
+  league-standings.json  classifica del girone (dal PDF della lega)
+  league-scorers.json    marcatori del girone (dal PDF della lega)
+scripts/
+  generate.js            costruisce le pagine HTML in /dist
+  fetch-instagram.js     legge Instagram e aggiorna /data
 ```
 
-## Come si vede in locale
+## Aggiornamenti
 
-Basta Node (nessun `npm install` necessario):
+- **Post e immagini**: automatici ogni giorno alle 6:00 UTC. Per
+  forzarli: tab Actions → "Aggiorna dati da Instagram" → Run workflow.
+- **Classifica e marcatori del girone**: il sito della lega (CSI) è
+  protetto da Cloudflare e non si può leggere in automatico. Si
+  scaricano i due PDF dal sito CSI e si aggiornano a mano
+  `data/league-standings.json` e `data/league-scorers.json`.
+- **Rosa**: si compila a mano in `data/players.json`, con elementi
+  del tipo `{ "number": 9, "name": "Nome Cognome", "role": "Attaccante" }`.
 
-```
-node scripts/generate.js
-```
+## Secrets del repository
 
-Poi apri `dist/index.html` nel browser, oppure servilo con
-`npx serve dist` se vuoi i link relativi puliti.
+Settings → Secrets and variables → Actions:
 
-## Come pubblicarlo
+- `INSTAGRAM_ACCESS_TOKEN` e `INSTAGRAM_ACCOUNT_ID` (obbligatori)
+- `ANTHROPIC_API_KEY` (facoltativo): senza, i post vengono importati
+  così come sono; con la chiave, lo script prova anche a riconoscere
+  risultati e marcatori dalle didascalie.
 
-1. Crea un repository su GitHub e carica questi file.
-2. Nelle impostazioni del repo, in *Pages*, imposta la sorgente su
-   **GitHub Actions**.
-3. Ad ogni push su `main`, il workflow rigenera il sito e lo pubblica.
+Il token Instagram dura 60 giorni: va rigenerato dalla dashboard Meta
+for Developers e aggiornato nel secret prima della scadenza.
 
-## Pipeline Instagram (automatica, giornaliera)
+## Note
 
-`scripts/fetch-instagram.js` + `.github/workflows/fetch-instagram.yml`:
-ogni giorno legge i post nuovi dall'account Instagram della squadra,
-li passa all'API di Claude per classificarli (è un post-risultato o
-no?) ed estrarne i dati strutturati (avversario, punteggio,
-marcatori), poi aggiorna `data/posts.json`, `data/matches.json` e
-`data/scorers.json` e fa push. Quel push fa scattare in automatico
-anche il workflow di build/deploy, quindi il sito si aggiorna da
-solo.
-
-Richiede questi Secrets nel repo (Settings → Secrets and variables →
-Actions): `INSTAGRAM_ACCESS_TOKEN`, `INSTAGRAM_ACCOUNT_ID`.
-
-`ANTHROPIC_API_KEY` è **facoltativo**: senza, i post vengono importati
-così come sono (didascalia → titolo/estratto del blog), senza capire
-se sono referti partita né estrarre punteggio/marcatori. Aggiungendo
-quel secret in un secondo momento, la pipeline passa da sola alla
-modalità "intelligente" — non serve toccare altro.
-
-Il token Instagram dura 60 giorni e va rinnovato manualmente dalla
-dashboard Meta prima della scadenza (nessun avviso automatico, per
-ora — da tenere a mente).
-
-Per testare la pipeline senza aspettare il cron: tab Actions → "Aggiorna
-dati da Instagram" → "Run workflow".
-
-## Cosa manca (prossimi passi)
-
-- **Dati reali**: sostituire i giocatori in `data/players.json` con
-  la rosa vera (la pipeline non li tocca, sono gestiti a mano).
-- **Classifica campionato**: eventuale terza sorgente dati dal sito
-  della lega, se si decide di importarla.
-- **Dominio personalizzato**: da collegare più avanti su GitHub Pages,
-  quando è pronto.
-- **Rinnovo token Instagram**: da fare manualmente ogni ~60 giorni.
+- Non cancellare intere cartelle del repo prima di caricare file nuovi:
+  basta caricare sopra, i file con lo stesso nome vengono sostituiti.
+- Pages: Settings → Pages → Source = "GitHub Actions".
+- In locale: `node scripts/generate.js`, poi apri `dist/index.html`.
