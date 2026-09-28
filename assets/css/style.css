@@ -225,10 +225,10 @@ nav.main-nav a.active {
 
 .post-thumb {
   display: block;
-  width: 100%;
-  max-width: 360px;
-  height: 220px;
-  object-fit: cover;
+  width: auto;
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
   border: 1.5px solid var(--rule);
   margin: 4px 0 10px;
 }
