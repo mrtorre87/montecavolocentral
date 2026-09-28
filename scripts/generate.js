@@ -68,6 +68,7 @@ function layout({ title, active, body }) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)} · ${TEAM_NAME}</title>
+<link rel="icon" type="image/png" href="assets/img/logo.png">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -118,7 +119,7 @@ function heroBlock() {
       <span>${last.score_them} ${escapeHtml(last.opponent.toUpperCase())}</span>
     </p>
     <p class="hero-meta">${last.home_away === 'casa' ? 'In casa' : 'In trasferta'} &middot; ${formatDateLong(last.date)}</p>
-    <span class="ribbon">Forza Montecavolo</span>
+    <span class="ribbon">Hala Central</span>
   </div>
 </section>`;
 }
