@@ -1,1 +1,126 @@
-[]
+[
+  {
+    "name": "Orlandini",
+    "role": "Portiere"
+  },
+  {
+    "name": "Manzini Riccardo",
+    "role": "Portiere"
+  },
+  {
+    "name": "Bezzi Davide",
+    "role": "Portiere"
+  },
+  {
+    "name": "Bigi Carlo",
+    "role": "Difensore"
+  },
+  {
+    "name": "Mezzadri Tommaso",
+    "role": "Difensore"
+  },
+  {
+    "name": "Stucchi C",
+    "role": "Difensore"
+  },
+  {
+    "name": "Vaccari",
+    "role": "Difensore"
+  },
+  {
+    "name": "Quadernari Gioele",
+    "role": "Difensore"
+  },
+  {
+    "name": "Manini Mattia",
+    "role": "Difensore"
+  },
+  {
+    "name": "Mattioli Davide",
+    "role": "Difensore"
+  },
+  {
+    "name": "Barozzi Marco",
+    "role": "Difensore"
+  },
+  {
+    "name": "Strozzi Luca",
+    "role": "Difensore"
+  },
+  {
+    "name": "Bertolini Giovanni",
+    "role": "Difensore"
+  },
+  {
+    "name": "Iacuzio Gerardo",
+    "role": "Difensore"
+  },
+  {
+    "name": "Donati",
+    "role": "Difensore"
+  },
+  {
+    "name": "Torri Sebastiano",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Barozzi Andrea",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Golinelli Andrea",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Castagnoli Francesco",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Soliani Francesco",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Bezzi Andrea",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Galeotti Marco",
+    "role": "Centrocampista"
+  },
+  {
+    "name": "Reverberi Matteo",
+    "role": "Attaccante"
+  },
+  {
+    "name": "Martini Alex",
+    "role": "Attaccante"
+  },
+  {
+    "name": "Reverberi Andrea",
+    "role": "Attaccante"
+  },
+  {
+    "name": "Golinelli Luca",
+    "role": "Attaccante"
+  },
+  {
+    "name": "Bezzi Mattia",
+    "role": "Attaccante"
+  },
+  {
+    "name": "Bezzi Luca",
+    "role": "Dirigente"
+  },
+  {
+    "name": "Ferretti Matteo",
+    "role": "Dirigente"
+  },
+  {
+    "name": "Bortolazzi Enrico",
+    "role": "Dirigente"
+  },
+  {
+    "name": "Fontanelli Filippo",
+    "role": "Dirigente"
+  }
+]

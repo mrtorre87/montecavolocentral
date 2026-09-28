@@ -158,22 +158,50 @@ function pageHome() {
 // ---- Squadra ----
 
 function playerCard(p) {
+  const number = p.number
+    ? `<div class="player-number">${p.number}</div>`
+    : '';
   return `<div class="player-card">
-    <div class="player-number">${p.number}</div>
+    ${number}
     <div class="player-name">${escapeHtml(p.name)}</div>
-    <div class="player-role">${escapeHtml(p.role)}</div>
+  </div>`;
+}
+
+// Ordine fisso dei reparti, come arrivano di solito in una rosa.
+const ROLE_GROUPS = [
+  { role: 'Portiere', label: 'Portieri' },
+  { role: 'Difensore', label: 'Difensori' },
+  { role: 'Centrocampista', label: 'Centrocampisti' },
+  { role: 'Attaccante', label: 'Attaccanti' },
+  { role: 'Dirigente', label: 'Dirigenti' },
+];
+
+function roleSection(label, group) {
+  if (!group.length) return '';
+  return `<div class="section-head">
+    <h2>${escapeHtml(label)}</h2>
+    <span class="count">${group.length}</span>
+  </div>
+  <div class="roster-grid">
+    ${group.map(playerCard).join('\n')}
   </div>`;
 }
 
 function pageSquadra() {
+  const totalPlayers = players.filter((p) => p.role !== 'Dirigente').length;
+  const sections = ROLE_GROUPS.map(({ role, label }) =>
+    roleSection(label, players.filter((p) => p.role === role))
+  ).join('\n');
+  const known = new Set(ROLE_GROUPS.map((g) => g.role));
+  const other = players.filter((p) => !known.has(p.role));
+  const otherSection = other.length ? roleSection('Altri', other) : '';
+
   const body = `<div class="wrap">
   <div class="section-head">
     <h2>La rosa</h2>
-    <span class="count">${players.length} giocatori</span>
+    <span class="count">${totalPlayers} giocatori</span>
   </div>
-  ${players.length ? `<div class="roster-grid">
-    ${players.map(playerCard).join('\n')}
-  </div>` : '<p class="post-excerpt">La rosa sara\' pubblicata a breve.</p>'}
+  ${players.length ? sections + otherSection : '<p class="post-excerpt">La rosa sara\' pubblicata a breve.</p>'}
 </div>`;
   return layout({ title: 'Squadra', active: 'squadra', body });
 }

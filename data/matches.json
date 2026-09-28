@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "date": "2026-09-28",
+    "competition": "Campionato CSI - Open M Girone B",
+    "home_away": "trasferta",
+    "opponent": "Lovers Football Club",
+    "score_us": 6,
+    "score_them": 0
+  },
+  {
+    "date": "2026-09-24",
+    "competition": "Campionato CSI - Open M Girone B",
+    "home_away": "casa",
+    "opponent": "Asinelli Vezzano",
+    "score_us": 3,
+    "score_them": 0
+  },
+  {
+    "date": "2026-09-17",
+    "competition": "Campionato CSI - Open M Girone B",
+    "home_away": "trasferta",
+    "opponent": "G.S. Fogliano",
+    "score_us": 4,
+    "score_them": 1
+  }
+]
