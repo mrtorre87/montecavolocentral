@@ -227,7 +227,7 @@ nav.main-nav a.active {
   display: block;
   width: 100%;
   max-width: 360px;
-  height: 220px;
+  height: 480px;
   object-fit: cover;
   border: 1.5px solid var(--rule);
   margin: 4px 0 10px;
