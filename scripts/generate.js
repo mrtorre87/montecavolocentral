@@ -197,14 +197,14 @@ function pageRisultati() {
     <h2>Risultati</h2>
     <span class="count">${matches.length} partite</span>
   </div>
-  <table class="data-table">
+  ${matches.length ? `<table class="data-table">
     <thead>
       <tr><th>Data</th><th>Competizione</th><th>Sede</th><th>Avversario</th><th>Risultato</th></tr>
     </thead>
     <tbody>
       ${matches.map(matchRow).join('\n')}
     </tbody>
-  </table>
+  </table>` : '<p class="post-excerpt">Nessun risultato ancora disponibile.</p>'}
 </div>`;
   return layout({ title: 'Risultati', active: 'risultati', body });
 }
@@ -220,19 +220,26 @@ function scorerRow(s, i) {
 }
 
 function pageMarcatori() {
+  // Se ci sono i dati ufficiali del girone (dal PDF della lega) usa quelli,
+  // filtrati sulla nostra squadra; altrimenti il conteggio interno.
+  const official = leagueScorers.rows
+    .filter((r) => r.is_us)
+    .map((r) => ({ name: r.name, goals: r.goals }))
+    .sort((a, b) => b.goals - a.goals);
+  const list = official.length ? official : scorers;
   const body = `<div class="wrap">
   <div class="section-head">
     <h2>Classifica marcatori</h2>
     <span class="count">stagione in corso</span>
   </div>
-  <table class="data-table">
+  ${list.length ? `<table class="data-table">
     <thead>
       <tr><th>#</th><th>Giocatore</th><th>Gol</th></tr>
     </thead>
     <tbody>
-      ${scorers.map(scorerRow).join('\n')}
+      ${list.map(scorerRow).join('\n')}
     </tbody>
-  </table>
+  </table>` : '<p class="post-excerpt">Nessun marcatore ancora disponibile.</p>'}
 </div>`;
   return layout({ title: 'Classifica marcatori', active: 'marcatori', body });
 }

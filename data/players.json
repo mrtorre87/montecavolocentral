@@ -1,9 +1,0 @@
-[
-  { "number": 1, "name": "Luca Ferri", "role": "Portiere" },
-  { "number": 4, "name": "Marco Bianchi", "role": "Difensore" },
-  { "number": 5, "name": "Davide Rossi", "role": "Difensore" },
-  { "number": 8, "name": "Simone Verdi", "role": "Centrocampista" },
-  { "number": 10, "name": "Andrea Neri", "role": "Centrocampista" },
-  { "number": 9, "name": "Paolo Colombo", "role": "Attaccante" },
-  { "number": 11, "name": "Matteo Galli", "role": "Attaccante" }
-]

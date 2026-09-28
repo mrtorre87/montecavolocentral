@@ -41,15 +41,23 @@ function writeJSON(name, data) {
 
 // ---- 1. Legge i media recenti da Instagram ----
 
-async function fetchRecentMedia() {
+// Legge i media dell'account seguendo la paginazione (25 alla volta, dal
+// piu' recente), fino a un massimo di pagine di sicurezza.
+async function fetchAllMedia() {
   const fields = 'id,caption,timestamp,permalink,media_type,media_url,thumbnail_url,children{media_type,media_url,thumbnail_url}';
-  const url = `https://graph.instagram.com/v21.0/${IG_ACCOUNT_ID}/media?fields=${fields}&access_token=${IG_TOKEN}&limit=25`;
-  const res = await fetch(url);
-  const json = await res.json();
-  if (json.error) {
-    throw new Error(`Errore Instagram API: ${json.error.message}`);
+  let url = `https://graph.instagram.com/v21.0/${IG_ACCOUNT_ID}/media?fields=${fields}&access_token=${IG_TOKEN}&limit=25`;
+  const all = [];
+  const MAX_PAGES = 8;
+  for (let page = 0; page < MAX_PAGES && url; page++) {
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.error) {
+      throw new Error(`Errore Instagram API: ${json.error.message}`);
+    }
+    all.push(...(json.data || []));
+    url = json.paging && json.paging.next ? json.paging.next : null;
   }
-  return json.data || [];
+  return all;
 }
 
 // Sceglie l'URL immagine migliore per un post: per i video usa la
@@ -72,6 +80,8 @@ const IMG_DIR = path.join(__dirname, '..', 'assets', 'img', 'posts');
 async function downloadImage(url, mediaId) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download immagine fallito (HTTP ${res.status})`);
+  const type = res.headers.get('content-type') || '';
+  if (!type.startsWith('image/')) throw new Error(`Il file scaricato non e' un'immagine (${type || 'tipo sconosciuto'})`);
   const buffer = Buffer.from(await res.arrayBuffer());
   fs.mkdirSync(IMG_DIR, { recursive: true });
   const filename = `${mediaId}.jpg`;
@@ -163,18 +173,29 @@ function updateScorers(scorers, extracted) {
 }
 
 async function main() {
-  const media = await fetchRecentMedia();
-  const posts = readJSON('posts.json');
+  fs.mkdirSync(IMG_DIR, { recursive: true });
+
+  const media = await fetchAllMedia();
+  let posts = readJSON('posts.json');
   const matches = readJSON('matches.json');
   const scorers = readJSON('scorers.json');
 
-  const knownIds = new Set(posts.map((p) => p.instagram_id).filter(Boolean));
-  const newMedia = media.filter((m) => !knownIds.has(m.id));
-
-  if (newMedia.length === 0) {
-    console.log('Nessun post nuovo trovato.');
-    return;
+  // Toglie i post di esempio dello scheletro iniziale (non hanno un
+  // instagram_id): restano solo post veri arrivati da Instagram.
+  const before = posts.length;
+  posts = posts.filter((p) => p.instagram_id);
+  if (posts.length !== before) {
+    console.log(`Rimossi ${before - posts.length} post di esempio.`);
   }
+
+  const knownIds = new Set(posts.map((p) => p.instagram_id));
+
+  // Non importa post piu' vecchi del piu' vecchio gia' presente: la storia
+  // gia' importata non si allarga all'indietro senza volerlo.
+  const oldestKnown = posts.length ? posts.map((p) => p.date).sort()[0] : null;
+  const newMedia = media.filter(
+    (m) => !knownIds.has(m.id) && (!oldestKnown || isoDate(m.timestamp) >= oldestKnown)
+  );
 
   // Dal piu' vecchio al piu' nuovo, cosi' l'ordine cronologico resta coerente
   newMedia.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
@@ -229,6 +250,30 @@ async function main() {
     }
   }
 
+  // Recupero immagini: i post gia' importati senza immagine (o con il file
+  // mancante) la scaricano ora, se Instagram la rende ancora disponibile.
+  const mediaById = new Map(media.map((m) => [m.id, m]));
+  const ROOT = path.join(__dirname, '..');
+  let backfilled = 0;
+  let stillMissing = 0;
+  for (const p of posts) {
+    const hasFile = p.image && fs.existsSync(path.join(ROOT, p.image));
+    if (hasFile) continue;
+    const m = mediaById.get(p.instagram_id);
+    const imageUrl = m ? pickImageUrl(m) : null;
+    if (!imageUrl) {
+      stillMissing++;
+      continue;
+    }
+    try {
+      p.image = await downloadImage(imageUrl, p.instagram_id);
+      backfilled++;
+    } catch (err) {
+      console.error(`  Download immagine fallito per ${p.instagram_id}: ${err.message}.`);
+      stillMissing++;
+    }
+  }
+
   posts.sort((a, b) => (a.date < b.date ? 1 : -1));
   matches.sort((a, b) => (a.date < b.date ? 1 : -1));
 
@@ -236,7 +281,7 @@ async function main() {
   writeJSON('matches.json', matches);
   writeJSON('scorers.json', scorers);
 
-  console.log(`Fatto: ${newMedia.length} post nuovi elaborati.`);
+  console.log(`Fatto: ${newMedia.length} post nuovi, ${backfilled} immagini recuperate per post vecchi, ${stillMissing} post ancora senza immagine.`);
 }
 
 main().catch((err) => {
