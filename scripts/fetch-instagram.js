@@ -32,8 +32,17 @@ if (!CLAUDE_API_KEY) {
   console.log("ANTHROPIC_API_KEY non impostata: importo i post cosi' come sono, senza estrazione dati.");
 }
 
-function readJSON(name) {
-  return JSON.parse(fs.readFileSync(path.join(DATA, name), 'utf8'));
+// Se un file dati non esiste (ancora), si parte da una lista vuota.
+function readJSON(name, fallback = []) {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(DATA, name), 'utf8'));
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.log(`${name} non trovato: parto da vuoto.`);
+      return fallback;
+    }
+    throw err;
+  }
 }
 function writeJSON(name, data) {
   fs.writeFileSync(path.join(DATA, name), JSON.stringify(data, null, 2) + '\n');
@@ -196,6 +205,14 @@ async function main() {
   const newMedia = media.filter(
     (m) => !knownIds.has(m.id) && (!oldestKnown || isoDate(m.timestamp) >= oldestKnown)
   );
+
+  // Se non c'e' ancora nessun post importato, parte dai piu' recenti (max 30)
+  // invece di tirare giu' tutto lo storico dell'account.
+  const MAX_INITIAL = 30;
+  if (!oldestKnown && newMedia.length > MAX_INITIAL) {
+    newMedia.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    newMedia.length = MAX_INITIAL;
+  }
 
   // Dal piu' vecchio al piu' nuovo, cosi' l'ordine cronologico resta coerente
   newMedia.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));

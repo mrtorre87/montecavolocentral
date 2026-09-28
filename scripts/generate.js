@@ -21,10 +21,10 @@ function readJSON(name) {
   return JSON.parse(fs.readFileSync(path.join(DATA, name), 'utf8'));
 }
 
-const players = readJSON('players.json');
-const matches = readJSON('matches.json');
-const scorers = readJSON('scorers.json').sort((a, b) => b.goals - a.goals);
-const posts = [...readJSON('posts.json')].sort((a, b) => (a.date < b.date ? 1 : -1));
+const players = readJSONSafe('players.json', []);
+const matches = readJSONSafe('matches.json', []);
+const scorers = readJSONSafe('scorers.json', []).sort((a, b) => b.goals - a.goals);
+const posts = [...readJSONSafe('posts.json', [])].sort((a, b) => (a.date < b.date ? 1 : -1));
 
 // Classifica campionato e marcatori di girone: arrivano da un workflow
 // separato (scripts/fetch-league.js) e potrebbero non esistere ancora
