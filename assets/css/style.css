@@ -109,14 +109,37 @@ nav.main-nav a {
   border-radius: 2px;
 }
 
-@media (max-width: 480px) {
-  nav.main-nav a { padding: 6px 10px; font-size: 14px; }
-}
-
 nav.main-nav a:hover,
 nav.main-nav a.active {
   background: var(--red);
 }
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle span + span { margin-top: 5px; }
+
+.nav-toggle.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
 
 /* ---- Hero (home only) ---- */
 
@@ -308,20 +331,21 @@ table.data-table tr.us-row td {
   font-weight: 700;
 }
 
+/* Contenitore di scroll orizzontale per le tabelle larghe: la tabella
+   resta un unico blocco (intestazione e dati nella stessa tabella), così
+   le colonne restano allineate; è il contenitore attorno a scorrere. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 40px;
+}
+
+.table-scroll table.data-table {
+  margin-bottom: 0;
+}
+
 @media (max-width: 700px) {
-  table.data-table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
-  }
-  table.data-table thead,
-  table.data-table tbody,
-  table.data-table tr {
-    display: table;
-    width: 100%;
-    table-layout: auto;
-  }
+  table.data-table { min-width: 560px; }
 }
 
 /* ---- Roster ---- */
@@ -385,14 +409,27 @@ table.data-table tr.us-row td {
 
 .site-footer strong { color: var(--white); }
 
-/* ---- Tablet (601–900px): nav un filo più compatta ---- */
-@media (max-width: 900px) and (min-width: 601px) {
+/* ---- Tablet (701–900px): nav un filo più compatta ---- */
+@media (max-width: 900px) and (min-width: 701px) {
   nav.main-nav a { padding: 7px 11px; font-size: 14px; }
 }
 
-/* ---- Mobile (≤600px) ---- */
-@media (max-width: 600px) {
-  nav.main-nav { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+/* ---- Mobile (≤700px): menu hamburger ---- */
+@media (max-width: 700px) {
+  .nav-toggle { display: flex; }
+
+  nav.main-nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 2px;
+    padding: 8px 0 4px;
+  }
+
+  nav.main-nav.open { display: flex; }
+
+  nav.main-nav a { padding: 12px 14px; }
+
   .post-item { grid-template-columns: 1fr; gap: 4px; }
   .post-date { display: flex; gap: 6px; align-items: baseline; }
   .post-date .day { font-size: 16px; }

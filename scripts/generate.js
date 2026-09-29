@@ -78,6 +78,9 @@ function layout({ title, active, body }) {
       <img src="assets/img/logo.png" alt="Stemma ${TEAM_NAME}">
       <span class="brand-name">${TEAM_NAME}<span>Dal ${FOUNDED}</span></span>
     </a>
+    <button class="nav-toggle" aria-label="Apri il menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <nav class="main-nav">
       <a href="index.html" class="${active === 'blog' ? 'active' : ''}">Blog</a>
       <a href="squadra.html" class="${active === 'squadra' ? 'active' : ''}">Squadra</a>
@@ -87,6 +90,18 @@ function layout({ title, active, body }) {
     </nav>
   </div>
 </header>
+<script>
+(function () {
+  var btn = document.querySelector('.nav-toggle');
+  var nav = document.querySelector('.main-nav');
+  if (!btn || !nav) return;
+  btn.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
 ${body}
 <footer class="site-footer">
   <div class="wrap">
@@ -226,14 +241,14 @@ function pageRisultati() {
     <h2>Risultati</h2>
     <span class="count">${matches.length} partite</span>
   </div>
-  ${matches.length ? `<table class="data-table">
+  ${matches.length ? `<div class="table-scroll"><table class="data-table">
     <thead>
       <tr><th>Data</th><th>Competizione</th><th>Sede</th><th>Avversario</th><th>Risultato</th></tr>
     </thead>
     <tbody>
       ${matches.map(matchRow).join('\n')}
     </tbody>
-  </table>` : '<p class="post-excerpt">Nessun risultato ancora disponibile.</p>'}
+  </table></div>` : '<p class="post-excerpt">Nessun risultato ancora disponibile.</p>'}
 </div>`;
   return layout({ title: 'Risultati', active: 'risultati', body });
 }
@@ -261,14 +276,14 @@ function pageMarcatori() {
     <h2>Classifica marcatori</h2>
     <span class="count">stagione in corso</span>
   </div>
-  ${list.length ? `<table class="data-table">
+  ${list.length ? `<div class="table-scroll"><table class="data-table">
     <thead>
       <tr><th>#</th><th>Giocatore</th><th>Gol</th></tr>
     </thead>
     <tbody>
       ${list.map(scorerRow).join('\n')}
     </tbody>
-  </table>` : '<p class="post-excerpt">Nessun marcatore ancora disponibile.</p>'}
+  </table></div>` : '<p class="post-excerpt">Nessun marcatore ancora disponibile.</p>'}
 </div>`;
   return layout({ title: 'Classifica marcatori', active: 'marcatori', body });
 }
@@ -296,14 +311,14 @@ function pageClassifica() {
     ? `Aggiornata ${formatDateLong(leagueStandings.updated.slice(0, 10))}`
     : 'Dati non ancora disponibili';
   const standingsBody = leagueStandings.rows.length
-    ? `<table class="data-table">
+    ? `<div class="table-scroll"><table class="data-table">
     <thead>
       <tr><th>#</th><th>Squadra</th><th>Pt</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th></tr>
     </thead>
     <tbody>
       ${leagueStandings.rows.map(standingsRow).join('\n')}
     </tbody>
-  </table>`
+  </table></div>`
     : '<p class="post-excerpt">Classifica non ancora disponibile.</p>';
 
   const body = `<div class="wrap">
