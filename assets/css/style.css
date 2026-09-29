@@ -26,9 +26,21 @@ body {
 a { color: inherit; }
 
 .wrap {
-  max-width: 920px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+@media (max-width: 700px) {
+  .wrap { padding: 0 18px; }
+}
+
+@media (max-width: 400px) {
+  .wrap { padding: 0 14px; }
+}
+
+@media (min-width: 1100px) {
+  .wrap { max-width: 1080px; }
 }
 
 /* ---- Header ---- */
@@ -63,9 +75,13 @@ a { color: inherit; }
   object-fit: contain;
 }
 
+@media (max-width: 480px) {
+  .brand img { height: 44px; width: 44px; }
+}
+
 .brand-name {
   font-family: 'Anton', sans-serif;
-  font-size: 22px;
+  font-size: clamp(17px, 4.5vw, 22px);
   letter-spacing: 0.5px;
   line-height: 1.05;
 }
@@ -93,6 +109,10 @@ nav.main-nav a {
   border-radius: 2px;
 }
 
+@media (max-width: 480px) {
+  nav.main-nav a { padding: 6px 10px; font-size: 14px; }
+}
+
 nav.main-nav a:hover,
 nav.main-nav a.active {
   background: var(--red);
@@ -110,6 +130,10 @@ nav.main-nav a.active {
 .hero .wrap {
   padding-top: 48px;
   padding-bottom: 52px;
+}
+
+@media (max-width: 480px) {
+  .hero .wrap { padding-top: 32px; padding-bottom: 36px; }
 }
 
 .hero-eyebrow {
@@ -161,7 +185,7 @@ nav.main-nav a.active {
 
 .section-head h2 {
   font-family: 'Anton', sans-serif;
-  font-size: 26px;
+  font-size: clamp(20px, 4vw, 26px);
   margin: 0;
   color: var(--navy);
   letter-spacing: 0.3px;
@@ -284,6 +308,22 @@ table.data-table tr.us-row td {
   font-weight: 700;
 }
 
+@media (max-width: 700px) {
+  table.data-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  table.data-table thead,
+  table.data-table tbody,
+  table.data-table tr {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+  }
+}
+
 /* ---- Roster ---- */
 
 .roster-grid {
@@ -291,6 +331,10 @@ table.data-table tr.us-row td {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
   margin-bottom: 40px;
+}
+
+@media (max-width: 480px) {
+  .roster-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 }
 
 .player-card {
@@ -341,9 +385,16 @@ table.data-table tr.us-row td {
 
 .site-footer strong { color: var(--white); }
 
-@media (max-width: 560px) {
+/* ---- Tablet (601–900px): nav un filo più compatta ---- */
+@media (max-width: 900px) and (min-width: 601px) {
+  nav.main-nav a { padding: 7px 11px; font-size: 14px; }
+}
+
+/* ---- Mobile (≤600px) ---- */
+@media (max-width: 600px) {
   nav.main-nav { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
   .post-item { grid-template-columns: 1fr; gap: 4px; }
   .post-date { display: flex; gap: 6px; align-items: baseline; }
   .post-date .day { font-size: 16px; }
+  .site-footer .wrap { flex-direction: column; gap: 4px; }
 }
