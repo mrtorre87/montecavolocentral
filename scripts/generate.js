@@ -16,6 +16,7 @@ const DIST = path.join(ROOT, 'dist');
 
 const TEAM_NAME = 'Montecavolo Central';
 const FOUNDED = 2016;
+const CUSTOM_DOMAIN = 'montecavolocentral.com';
 
 function readJSON(name) {
   return JSON.parse(fs.readFileSync(path.join(DATA, name), 'utf8'));
@@ -355,6 +356,7 @@ fs.writeFileSync(path.join(DIST, 'risultati.html'), pageRisultati());
 fs.writeFileSync(path.join(DIST, 'marcatori.html'), pageMarcatori());
 fs.writeFileSync(path.join(DIST, 'classifica.html'), pageClassifica());
 copyDir(path.join(ROOT, 'assets'), path.join(DIST, 'assets'));
+fs.writeFileSync(path.join(DIST, 'CNAME'), CUSTOM_DOMAIN + '\n');
 
 console.log(`Sito generato in ${DIST}`);
 console.log(`- ${posts.length} post, ${players.length} giocatori, ${matches.length} partite, ${scorers.length} marcatori`);
