@@ -1,9 +1,22 @@
 {
-  "updated": "2026-09-28T10:26:00",
-  "source_url": "https://live.centrosportivoitaliano.it/ (Classifica, Calcio A 11 2026/2027, Open M / Girone B)",
+  "updated": "2026-09-29T00:00:00",
+  "source_url": "https://live.centrosportivoitaliano.it/26/Calcio-a-11/Emilia-Romagna/Reggio-Emilia/S132/ (Info squadra Saxum Un. Montecavolo Central)",
   "rows": [
     {
       "position": 1,
+      "team": "Saxum Un. Montecavolo Central",
+      "points": 9,
+      "played": 3,
+      "wins": 3,
+      "draws": 0,
+      "losses": 0,
+      "goals_for": 13,
+      "goals_against": 1,
+      "goal_diff": 12,
+      "is_us": true
+    },
+    {
+      "position": 2,
       "team": "Real Scandiano",
       "points": 6,
       "played": 2,
@@ -14,19 +27,6 @@
       "goals_against": 0,
       "goal_diff": 10,
       "is_us": false
-    },
-    {
-      "position": 2,
-      "team": "Saxum Un. Montecavolo Central",
-      "points": 6,
-      "played": 2,
-      "wins": 2,
-      "draws": 0,
-      "losses": 0,
-      "goals_for": 7,
-      "goals_against": 1,
-      "goal_diff": 6,
-      "is_us": true
     },
     {
       "position": 3,
@@ -97,13 +97,13 @@
       "position": 8,
       "team": "Lovers Football Club",
       "points": 1,
-      "played": 2,
+      "played": 3,
       "wins": 0,
       "draws": 1,
-      "losses": 1,
+      "losses": 2,
       "goals_for": 1,
-      "goals_against": 6,
-      "goal_diff": -5,
+      "goals_against": 12,
+      "goal_diff": -11,
       "is_us": false
     },
     {
