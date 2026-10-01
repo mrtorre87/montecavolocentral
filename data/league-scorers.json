@@ -1,54 +1,24 @@
 {
-  "updated": "2026-09-28T10:27:00",
-  "source_url": "https://live.centrosportivoitaliano.it/ (Classifica Marcatori, Calcio A 11 2026/2027, Open M / Girone B)",
+  "updated": "2026-10-01T00:00:00",
+  "source_url": "https://live.centrosportivoitaliano.it/26/Calcio-a-11/Emilia-Romagna/Reggio-Emilia/S132/ (Info squadra Saxum Un. Montecavolo Central)",
   "rows": [
     {
       "name": "Castagnoli Francesco",
+      "goals": 5,
+      "team": "Saxum Un. Montecavolo Central",
+      "is_us": true
+    },
+    {
+      "name": "Bezzi Mattia",
       "goals": 3,
       "team": "Saxum Un. Montecavolo Central",
       "is_us": true
     },
     {
-      "name": "Predieri Marco",
-      "goals": 3,
-      "team": "Real Pratissolo Tagliani Costruzioni",
-      "is_us": false
-    },
-    {
-      "name": "Vecchi Luca",
-      "goals": 3,
-      "team": "Real Scandiano",
-      "is_us": false
-    },
-    {
-      "name": "Bani Bruno",
+      "name": "Barozzi Marco",
       "goals": 2,
-      "team": "Real Scandiano",
-      "is_us": false
-    },
-    {
-      "name": "Canovi Mattia",
-      "goals": 2,
-      "team": "Real Scandiano",
-      "is_us": false
-    },
-    {
-      "name": "Fantuzzi Mattia",
-      "goals": 2,
-      "team": "Arceto United",
-      "is_us": false
-    },
-    {
-      "name": "Ghinelli Enrico",
-      "goals": 2,
-      "team": "U.S.D. Baiso",
-      "is_us": false
-    },
-    {
-      "name": "Gilioli Lorenzo",
-      "goals": 2,
-      "team": "Real Scandiano",
-      "is_us": false
+      "team": "Saxum Un. Montecavolo Central",
+      "is_us": true
     },
     {
       "name": "Martini Alex",
@@ -57,94 +27,10 @@
       "is_us": true
     },
     {
-      "name": "Meglioli Luca",
-      "goals": 2,
-      "team": "P.S. Sutura",
-      "is_us": false
-    },
-    {
-      "name": "Piredda Matteo",
-      "goals": 2,
-      "team": "Salvaterra Granata",
-      "is_us": false
-    },
-    {
-      "name": "Spallanzani Massimo",
-      "goals": 2,
-      "team": "Arceto United",
-      "is_us": false
-    },
-    {
-      "name": "Amoundi Osama",
-      "goals": 1,
-      "team": "Salvaterra Granata",
-      "is_us": false
-    },
-    {
-      "name": "Barsaglini Emanuele",
-      "goals": 1,
-      "team": "U.S.D. Baiso",
-      "is_us": false
-    },
-    {
-      "name": "Bezzi Mattia",
-      "goals": 1,
-      "team": "Saxum Un. Montecavolo Central",
-      "is_us": true
-    },
-    {
-      "name": "Chiossi Nicola",
-      "goals": 1,
-      "team": "Real Pratissolo Tagliani Costruzioni",
-      "is_us": false
-    },
-    {
-      "name": "Davoli Andrea",
-      "goals": 1,
-      "team": "Real Pratissolo Tagliani Costruzioni",
-      "is_us": false
-    },
-    {
-      "name": "Gatti Matteo",
-      "goals": 1,
-      "team": "Lovers Football Club",
-      "is_us": false
-    },
-    {
-      "name": "Lasagni Simone",
-      "goals": 1,
-      "team": "Real Scandiano",
-      "is_us": false
-    },
-    {
-      "name": "Leuzzi Christian",
-      "goals": 1,
-      "team": "Salvaterra Granata",
-      "is_us": false
-    },
-    {
-      "name": "Panciroli Alessandro",
-      "goals": 1,
-      "team": "G.S. Fogliano",
-      "is_us": false
-    },
-    {
-      "name": "Saetti Matteo",
-      "goals": 1,
-      "team": "Salvaterra Granata",
-      "is_us": false
-    },
-    {
       "name": "Soliani Francesco",
       "goals": 1,
       "team": "Saxum Un. Montecavolo Central",
       "is_us": true
-    },
-    {
-      "name": "Taroni Roberto",
-      "goals": 1,
-      "team": "G.S. Fogliano",
-      "is_us": false
     }
   ]
 }
