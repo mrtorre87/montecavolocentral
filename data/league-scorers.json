@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-09T23:12:00",
+  "updated": "2026-10-20T23:36:00",
   "source_url": "https://live.centrosportivoitaliano.it/26/Calcio-a-11/Emilia-Romagna/Reggio-Emilia/S132/ (Info squadra Saxum Un. Montecavolo Central)",
   "rows": [
     {
@@ -28,6 +28,12 @@
     },
     {
       "name": "Barozzi Marco",
+      "goals": 1,
+      "team": "Saxum Un. Montecavolo Central",
+      "is_us": true
+    },
+    {
+      "name": "Bezzi Andrea",
       "goals": 1,
       "team": "Saxum Un. Montecavolo Central",
       "is_us": true
