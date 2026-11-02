@@ -1,5 +1,21 @@
 [
   {
+    "date": "2026-10-29",
+    "competition": "Campionato CSI - Open M Girone B",
+    "home_away": "casa",
+    "opponent": "U.S.D. Baiso",
+    "score_us": 1,
+    "score_them": 1
+  },
+  {
+    "date": "2026-10-22",
+    "competition": "Campionato CSI - Open M Girone B",
+    "home_away": "casa",
+    "opponent": "Real Scandiano",
+    "score_us": 0,
+    "score_them": 1
+  },
+  {
     "date": "2026-10-15",
     "competition": "Campionato CSI - Open M Girone B",
     "home_away": "trasferta",
